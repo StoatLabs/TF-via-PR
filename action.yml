@@ -353,7 +353,12 @@ runs:
 
         # Note the identifier prefix if one is provided.
         if [[ -n "${{ inputs.identifier-prefix }}" ]]; then
-          identifier_prefix="###### Run for identifier - ${{ inputs.identifier-prefix }}"
+          identifier_prefix="
+          ###### Run for identifier - ${{ inputs.identifier-prefix }}
+
+          <br/>
+
+          "
         else
           identifier_prefix=""
         fi
@@ -371,7 +376,6 @@ runs:
 
         <!-- placeholder-4 -->
         ${identifier_prefix}
-
         ###### By ${handle}${GITHUB_TRIGGERING_ACTOR} at ${{ github.event.pull_request.updated_at || github.event.head_commit.timestamp || github.event.merge_group.head_commit.timestamp }} [(view log)](${run_url}).
         </summary>
 
