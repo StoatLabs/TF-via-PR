@@ -91,6 +91,9 @@ runs:
         # Generate identifier for the workflow run using MD5 hashing algorithm for concise and unique naming.
         identifier="${{ steps.arg.outputs.arg-chdir }}${{ steps.arg.outputs.arg-backend-config }}${{ steps.arg.outputs.arg-var-file }}${{ steps.arg.outputs.arg-var }}${{ inputs.arg-workspace }}${{ steps.arg.outputs.arg-destroy }}"
         identifier=$(echo -n "$identifier" | md5sum | awk '{print $1}')
+        if [[ -n "${{ inputs.identifier-prefix }}" ]]; then
+          identifier="${{ inputs.identifier-prefix }}-${identifier}"
+        fi
         echo "name=${{ inputs.tool }}-${pr_number}-${identifier}.tfplan" >> "$GITHUB_OUTPUT"
 
         # List jobs from the current workflow run.
@@ -462,6 +465,10 @@ inputs:
   hide-args:
     default: "detailed-exitcode,lock,out,var="
     description: "Hide comma-separated arguments from the command input (e.g., `detailed-exitcode,lock,out,var=`)."
+    required: false
+  identifier-prefix:
+    default: ""
+    description: "Prefix for the identifier (e.g., `tf`)."
     required: false
   label-pr:
     default: "true"
