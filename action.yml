@@ -75,9 +75,7 @@ runs:
       run: |
         # Unique identifier.
         # Get PR number using different query methods for push, merge_group, and pull_request events.
-        if [[ -n "${{ inputs.pr-number }}" ]]; then
-          pr_number=${{ inputs.pr-number }}
-        elif [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+        if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
           # List PRs associated with the commit, then get the PR number from the head ref or the latest PR.
           associated_prs=$(gh api /repos/{owner}/{repo}/commits/${GITHUB_SHA}/pulls --header "$GH_API" --method GET --field per_page=100)
           pr_number=$(echo "$associated_prs" | jq --raw-output '(.[] | select(.head.ref == env.GITHUB_REF_NAME) | .number) // .[0].number // 0')
@@ -476,10 +474,6 @@ inputs:
   plan-parity:
     default: "false"
     description: "Replace the plan file if it matches a newly-generated one to prevent stale apply (e.g., `false`)."
-    required: false
-  pr-number:
-    default: ""
-    description: "Specify a PR number for the executed workflow"
     required: false
   show-args:
     default: "workspace"
